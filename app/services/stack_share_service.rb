@@ -14,7 +14,8 @@ class StackShareService
   # @param [class] model_class the model class that should be used to perform ActiveRecord operations
   # @param [Array<Model>] all_from_db all of those objects as they currently are in the DB
   # @param [Array<Hash>] all_from_api all of those objects as fetched from the API
-  def self.sync_all!(model_class, all_from_db, all_from_api)
+  # @param [Array<Symbol>] fields the fields that must be synced up, besides api_id
+  def self.sync_all!(model_class, all_from_db, all_from_api, fields = [:name])
     # Destroying all records that shouldn't be there
     api_ids_to_delete = all_from_db.map(&:api_id) - all_from_api.map{|tag| tag["id"]}
     model_class.where(api_id: api_ids_to_delete).destroy_all
@@ -23,9 +24,11 @@ class StackShareService
     all_from_db_by_id = all_from_db.group_by(&:api_id)
     all_from_api.each do |record|
       if all_from_db_by_id.has_key?(record["id"])  # Already exists, just needs to be potentially updated
-        all_from_db_by_id[record["id"]].first.update!(name: record["name"])
+        all_from_db_by_id[record["id"]].first.update!(Hash[fields.map{|f|[f, record[f.to_s]]}])
       else  # Doesn't exist, needs to be created
-        model_class.create!(api_id: record["id"], name: record["name"])
+        object_hash = {api_id: record["id"]}
+        fields.each{|f| object_hash[f] = record[f.to_s] }
+        model_class.create!(object_hash)
       end
     end
   end
@@ -57,9 +60,26 @@ class StackShareService
     elsif res.is_a?(Net::HTTPSuccess)  # This is an existing page -> recursion
       JSON.parse(res.body) + all_tags_from_page(page+1)
     else
-      raise "Error when calling StackShare's API: #{res}"
+      raise "Error when calling StackShare's API to fetch pages: #{res}"
     end
   end
 
+
+  ## LAYERS
+
+  # Updates the DB so that the layers are the same as the ones in the API.
+  def sync_all_layers!
+    # First, getting everything from the DB
+    all_layers_from_db = Layer.all
+
+    # Calling the API for just this page
+    uri = URI(API_ROOT + '/tools/layers')
+    uri.query = URI.encode_www_form access_token: @access_token
+    res = Net::HTTP.get_response(uri)
+    raise "Error when calling StackShare's API to fetch layers: #{res}" unless res.is_a?(Net::HTTPSuccess)
+    all_layers_from_api = JSON.parse(res.body)
+
+    StackShareService.sync_all!(Layer, all_layers_from_db, all_layers_from_api, [:name, :slug])
+  end
 
 end

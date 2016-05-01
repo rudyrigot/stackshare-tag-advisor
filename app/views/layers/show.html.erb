@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Api:</strong>
+  <%= @layer.api_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @layer.name %>
+</p>
+
+<p>
+  <strong>Slug:</strong>
+  <%= @layer.slug %>
+</p>
+
+<%= link_to 'Edit', edit_layer_path(@layer) %> |
+<%= link_to 'Back', layers_path %>
