@@ -1,6 +1,6 @@
 <article id="advice">
   <h1>
-    Most popular full stack for "<%= @tag.name %>"<%= @most_popular_stack.present? ? ": #{@most_popular_stack.name}" : '' %>
+    Most popular full stack for "<%= @tag.humanized_name %>"<%= @most_popular_stack.present? ? ": #{@most_popular_stack.name}" : '' %>
   </h1>
 
   <% if @most_popular_stack.nil? %>

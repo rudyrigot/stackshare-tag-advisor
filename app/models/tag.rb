@@ -10,8 +10,16 @@ class Tag < ActiveRecord::Base
     # First, getting everything from both datasources
     all_tags_from_db = Tag.all
     all_tags_from_api = api_fetch_all_tags_from_page(1, stack_share_service)
+    # Then, we want to modify the Hash from the API a bit, so that fields match exactly (like: "humanized_name")
+    all_tags_from_api.map! do |tag|
+      {
+        "id" => tag["id"],
+        "name" => tag["name"],
+        "humanized_name" => tag["name"].gsub("-", " ").split.map(&:capitalize).join(' ')
+      }
+    end
     # Then syncing
-    stack_share_service.sync_all(Tag, all_tags_from_db, all_tags_from_api)
+    stack_share_service.sync_all(Tag, all_tags_from_db, all_tags_from_api, [:name, :humanized_name])
   end
 
   # Recursive function to return all tags of all pages from a certain page number
