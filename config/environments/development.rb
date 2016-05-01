@@ -40,4 +40,5 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   config.x.admin_password = ENV['STACKSHARE_ADMIN_PASSWORD'] || raise("Env variable STACKSHARE_ADMIN_PASSWORD missing")
+  config.x.stackshare_api_access_token = ENV['STACKSHARE_API_ACCESS_TOKEN'] || raise("Env variable STACKSHARE_API_ACCESS_TOKEN missing")
 end

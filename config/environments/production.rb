@@ -78,4 +78,5 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.x.admin_password = ENV['STACKSHARE_ADMIN_PASSWORD'] || raise("Env variable STACKSHARE_ADMIN_PASSWORD missing")
+  config.x.stackshare_api_access_token = ENV['STACKSHARE_API_ACCESS_TOKEN'] || raise("Env variable STACKSHARE_API_ACCESS_TOKEN missing")
 end
