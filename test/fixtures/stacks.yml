@@ -4,10 +4,10 @@ one:
   api_id: 1
   name: StackShare
   slug: stackshare
-  popularity: 1
+  popularity: 150
 
 two:
   api_id: 2
   name: Google
   slug: google
-  popularity: 1
+  popularity: 200
