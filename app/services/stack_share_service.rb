@@ -13,86 +13,19 @@ class StackShareService
   end
 
 
-  ## TAGS
-
-  # Updates the DB so that the tags are the same as the ones in the API.
-  def sync_all_tags!
-    # First, getting everything from both datasources
-    all_tags_from_db = Tag.all
-    all_tags_from_api = all_tags_from_page(1)
-
-    sync_all!(Tag, all_tags_from_db, all_tags_from_api)
-  end
-
-  # Recursive function to return all tags of all pages from a certain page number
+  # A one-size-fits-all method to call the API. Returns the response object, because depending on endpoints,
+  # we will have to check out the status code sometimes.
   #
-  # @param [FixNum] page the page number where to start
-  # @return [Array<Hash>] all the existing tags in one array
-  def all_tags_from_page(page)
-    # Calling the API for just this page
-    uri = URI(API_ROOT + '/stacks/tags')
-    uri.query = URI.encode_www_form(access_token: @access_token, page: page)
-    res = Net::HTTP.get_response(uri)
-
-    if res.is_a?(Net::HTTPNotFound)  # This happens for the page after the last one -> base case
-      []
-    elsif res.is_a?(Net::HTTPSuccess)  # This is an existing page -> recursion
-      JSON.parse(res.body) + all_tags_from_page(page+1)
-    else
-      raise "Error when calling StackShare's API to fetch pages: #{res}"
-    end
+  # @param [String] path the path of the endpoint, without the domain and api version (like "/tools/lookup")
+  # @param [Hash<Symbol,String>] params the HTTP params
+  # @return [Response] the HTTP response object
+  def call_api(path, params = {})
+    params[:access_token] = @access_token
+    uri = URI(API_ROOT + path)
+    uri.query = URI.encode_www_form params
+    Net::HTTP.get_response(uri)
   end
 
-
-  ## LAYERS
-
-  # Updates the DB so that the layers are the same as the ones in the API.
-  def sync_all_layers!
-    # First, getting everything from the DB
-    all_layers_from_db = Layer.all
-
-    # Calling the API
-    uri = URI(API_ROOT + '/tools/layers')
-    uri.query = URI.encode_www_form access_token: @access_token
-    res = Net::HTTP.get_response(uri)
-    raise "Error when calling StackShare's API to fetch layers: #{res}" unless res.is_a?(Net::HTTPSuccess)
-    all_layers_from_api = JSON.parse(res.body)
-
-    sync_all!(Layer, all_layers_from_db, all_layers_from_api, [:name, :slug])
-  end
-
-
-  ## TOOLS
-
-  # Updates the DB so that the layers are the same as the ones in the API.
-  def sync_all_tools!
-    # First, getting everything from the DB
-    all_tools_from_db = Tool.all
-
-    # Then, making as many lookup calls as there are layers, in order to accumulate all the tools with a layer
-    all_tools_from_api = []
-    Layer.pluck(:api_id).each do |layer_id|
-      # Calling the API for just this page
-      uri = URI(API_ROOT + '/tools/lookup')
-      uri.query = URI.encode_www_form access_token: @access_token, layer_id: layer_id
-      res = Net::HTTP.get_response(uri)
-      raise "Error when calling StackShare's API to fetch layers: #{res}" unless res.is_a?(Net::HTTPSuccess)
-      all_tools_from_api += JSON.parse(res.body)
-    end
-
-    # Then, we want to modify the Hash from the API a bit, so that fields match exactly (like: ["layer"]["id"] becomes "layer_id")
-    layers_by_api_id = Layer.all.group_by(&:api_id)  # Will be useful to turn a layer's api_id into its DB id
-    all_tools_from_api.map!{|tool| {"id" => tool["id"], "name" => tool["name"], "slug" => tool["slug"], "popularity" => tool["popularity"], "layer_id" => layers_by_api_id[tool["layer"]["id"]].first.id, "full_object" => tool} }
-
-    # Finally, syncing it all
-    sync_all!(Tool, all_tools_from_db, all_tools_from_api, [:name, :slug, :popularity, :layer_id, :full_object])
-  end
-
-
-  private
-
-
-  ## USED FOR ALL SYNCS
 
   # Given a model class and an API id, returns the matching object from DB. Returns nil if such object doesn't exist.
   # We could have used model_class.find_by(api_id: api_id), but this operation is done countless times in a row during a sync,
@@ -114,6 +47,7 @@ class StackShareService
     # Lookup
     @objects_by_api_id_by_model_class[model_class][api_id]
   end
+
 
   # Syncs up all objects in a DB based on those fetched from the API.
   # Updates are incremental, so that users' experiences are not disrupted during the update.
