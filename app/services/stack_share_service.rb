@@ -72,7 +72,7 @@ class StackShareService
     # First, getting everything from the DB
     all_layers_from_db = Layer.all
 
-    # Calling the API for just this page
+    # Calling the API
     uri = URI(API_ROOT + '/tools/layers')
     uri.query = URI.encode_www_form access_token: @access_token
     res = Net::HTTP.get_response(uri)
@@ -80,6 +80,33 @@ class StackShareService
     all_layers_from_api = JSON.parse(res.body)
 
     StackShareService.sync_all!(Layer, all_layers_from_db, all_layers_from_api, [:name, :slug])
+  end
+
+
+  ## TOOLS
+
+  # Updates the DB so that the layers are the same as the ones in the API.
+  def sync_all_tools!
+    # First, getting everything from the DB
+    all_tools_from_db = Tool.all
+
+    # Then, making as many lookup calls as there are layers, in order to accumulate all the tools with a layer
+    all_tools_from_api = []
+    Layer.pluck(:api_id).each do |layer_id|
+      # Calling the API for just this page
+      uri = URI(API_ROOT + '/tools/lookup')
+      uri.query = URI.encode_www_form access_token: @access_token, layer_id: layer_id
+      res = Net::HTTP.get_response(uri)
+      raise "Error when calling StackShare's API to fetch layers: #{res}" unless res.is_a?(Net::HTTPSuccess)
+      all_tools_from_api += JSON.parse(res.body)
+    end
+
+    # Then, we want to modify the Hash from the API a bit, so that fields match exactly (like: ["layer"]["id"] becomes "layer_id")
+    layers_by_api_id = Layer.all.group_by(&:api_id)  # Will be useful to turn a layer's api_id into its DB id
+    all_tools_from_api.map!{|tool| {"id" => tool["id"], "name" => tool["name"], "slug" => tool["slug"], "popularity" => tool["popularity"], "layer_id" => layers_by_api_id[tool["layer"]["id"]].first.id} }
+
+    # Finally, syncing it all
+    StackShareService.sync_all!(Tool, all_tools_from_db, all_tools_from_api, [:name, :slug, :popularity, :layer_id])
   end
 
 end

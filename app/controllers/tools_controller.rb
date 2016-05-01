@@ -5,12 +5,13 @@ class ToolsController < ApplicationController
   # GET /tools
   # GET /tools.json
   def index
-    @tools = Tool.all
+    @tools = Tool.includes(:layer)
   end
 
   # GET /tools/1
   # GET /tools/1.json
   def show
+    @layer = @tool.layer
   end
 
   # GET /tools/new
