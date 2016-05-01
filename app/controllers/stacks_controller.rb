@@ -1,6 +1,6 @@
 class StacksController < ApplicationController
   before_action :set_stack, only: [:show, :edit, :update, :destroy]
-  http_basic_authenticate_with name: "admin", password: Rails.configuration.x.admin_password, except: :index unless Rails.env.test?
+  http_basic_authenticate_with name: "admin", password: Rails.configuration.x.admin_password unless Rails.env.test?
 
   # GET /stacks
   # GET /stacks.json
