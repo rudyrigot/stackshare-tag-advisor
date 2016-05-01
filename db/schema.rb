@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160501080953) do
+ActiveRecord::Schema.define(version: 20160501173159) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "layers", force: :cascade do |t|
     t.integer  "api_id"
@@ -37,8 +38,9 @@ ActiveRecord::Schema.define(version: 20160501080953) do
     t.string   "name"
     t.string   "slug"
     t.integer  "popularity"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.hstore   "full_object"
   end
 
   add_index "tools", ["layer_id"], name: "index_tools_on_layer_id", using: :btree

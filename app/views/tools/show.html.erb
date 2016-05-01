@@ -25,5 +25,12 @@
   <%= @tool.popularity %>
 </p>
 
+<p>
+  <strong>Full object</strong>
+  <pre>
+<%= JSON.pretty_generate(@tool.full_object) if @tool.full_object.present? %>
+  </pre>
+</p>
+
 <%= link_to 'Edit', edit_tool_path(@tool) %> |
 <%= link_to 'Back', tools_path %>
