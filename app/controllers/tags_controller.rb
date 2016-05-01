@@ -74,8 +74,8 @@ class TagsController < ApplicationController
     @most_popular_stack = Stack.joins(:tags).order(popularity: :desc).where("tags.id = ?", @tag.id).limit(1).first
     # If there is one, fetching / parsing some more needed data
     if @most_popular_stack.present?
-      @company = JSON.parse @most_popular_stack.full_object['company'].gsub('=>',':')
-      @tags = JSON.parse @most_popular_stack.full_object['tags'].gsub('=>',':')
+      @company = JSON.parse @most_popular_stack.full_object['company'].gsub('=>',':').gsub(':nil',':null')
+      @tags = JSON.parse @most_popular_stack.full_object['tags'].gsub('=>',':').gsub(':nil',':null')
       @tools_by_layer_id = @most_popular_stack.tools.group_by(&:layer_id)
       @all_layers = Layer.order :api_id
     end
