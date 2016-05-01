@@ -3,7 +3,7 @@ require 'test_helper'
 class StackTest < ActiveSupport::TestCase
   setup do
     # Stubbing the /stacks/lookup requests
-    stacks_json = %([{"id":2,"name":"Alphabet","slug":"alphabet","popularity":170,"tools":[{"id":2681},{"id":999}]},{"id":3,"name":"Holberton School","slug":"holberton-school","popularity":4,"tools":[]}])
+    stacks_json = %([{"id":2,"name":"Alphabet","slug":"alphabet","popularity":170,"tools":[{"id":2681},{"id":999}],"tags":[{"id":9},{"id":999}]},{"id":3,"name":"Holberton School","slug":"holberton-school","popularity":4,"tools":[],"tags":[]}])
     stub_request(:get, "https://api.stackshare.io/v1/stacks/lookup?access_token=&tag_id=1").to_return(body: stacks_json)
   end
 
@@ -13,5 +13,7 @@ class StackTest < ActiveSupport::TestCase
     assert_equal expected, Stack.order(:api_id).pluck(:slug)
     expected = [["punch"], []]
     assert_equal expected, Stack.order(:api_id).map{|s| s.tools.map(&:slug)}
+    expected = [["new_thing"], []]
+    assert_equal expected, Stack.order(:api_id).map{|s| s.tags.map(&:name)}
   end
 end
