@@ -38,4 +38,6 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  config.x.admin_password = ENV['STACKSHARE_ADMIN_PASSWORD'] || raise("Env variable STACKSHARE_ADMIN_PASSWORD missing")
 end

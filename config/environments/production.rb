@@ -76,4 +76,6 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  config.x.admin_password = ENV['STACKSHARE_ADMIN_PASSWORD'] || raise("Env variable STACKSHARE_ADMIN_PASSWORD missing")
 end

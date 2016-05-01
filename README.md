@@ -4,10 +4,14 @@ Rails application allowing users to indicate which type of company they work for
 
 ## Installation
 
-Required local environment variables:
+Required environment variables in development:
 
  - STACKSHARE_DATABASE_PASSWORD
+
+Required environment variables in development and production:
+
  - STACKSHARE_API_ACCESS_TOKEN
+ - STACKSHARE_ADMIN_PASSWORD
 
 ## License
 
