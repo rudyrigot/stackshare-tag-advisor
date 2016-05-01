@@ -6,7 +6,13 @@ class Stack < ActiveRecord::Base
   validates :api_id, uniqueness: true
 
   # Syncs up stacks from the StackShare API
+  # There is some caching in place (sync won't be done if was attempted within the past hour)
   def self.sync_from_stackshare_api(tag_id)
+    # Caching: checking that this wasn't recently done
+    @@updated_at_by_tag_id ||= {}
+    return if @@updated_at_by_tag_id[tag_id].present? && (Time.now - @@updated_at_by_tag_id[tag_id]) < 1.hour
+    @@updated_at_by_tag_id[tag_id] = Time.now
+
     stack_share_service = StackShareService.new
 
     # First, getting everything from the DB
