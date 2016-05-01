@@ -21,10 +21,18 @@ class Tool < ActiveRecord::Base
     end
 
     # Then, we want to modify the Hash from the API a bit, so that fields match exactly (like: ["layer"]["id"] becomes "layer_id")
-    layers_by_api_id = Layer.all.group_by(&:api_id)  # Will be useful to turn a layer's api_id into its DB id
-    all_tools_from_api.map!{|tool| {"id" => tool["id"], "name" => tool["name"], "slug" => tool["slug"], "popularity" => tool["popularity"], "layer_id" => layers_by_api_id[tool["layer"]["id"]].first.id, "full_object" => tool} }
+    all_tools_from_api.map! do |tool|
+      {
+        "id" => tool["id"],
+        "name" => tool["name"],
+        "slug" => tool["slug"],
+        "popularity" => tool["popularity"],
+        "layer" => stack_share_service.object_from_api_id(Layer, tool["layer"]["id"]),
+        "full_object" => tool
+      }
+    end
 
     # Finally, syncing it all
-    stack_share_service.sync_all(Tool, all_tools_from_db, all_tools_from_api, [:name, :slug, :popularity, :layer_id, :full_object])
+    stack_share_service.sync_all(Tool, all_tools_from_db, all_tools_from_api, [:name, :slug, :popularity, :layer, :full_object])
   end
 end
