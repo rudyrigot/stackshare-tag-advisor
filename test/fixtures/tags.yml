@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: peer-to-peer
+  api_id: 21
+
+two:
+  name: marketplaces
+  api_id: 22
+
+three:
+  name: hotels
+  api_id: 23
+
+four:
+  name: sms
+  api_id: 24
