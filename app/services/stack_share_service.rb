@@ -7,27 +7,39 @@ class StackShareService
     @access_token = Rails.configuration.x.stackshare_api_access_token
   end
 
-  # Updates the DB so that the tags are the same as the ones in the API.
-  # Is mindful of DB query: 1 to look everything up, and 1 per update or new insert.
+
+  # Syncs up all objects in a DB based on those fetched from the API.
   # Updates are incremental, so that users' experiences are not disrupted during the update.
+  #
+  # @param [class] model_class the model class that should be used to perform ActiveRecord operations
+  # @param [Array<Model>] all_from_db all of those objects as they currently are in the DB
+  # @param [Array<Hash>] all_from_api all of those objects as fetched from the API
+  def self.sync_all!(model_class, all_from_db, all_from_api)
+    # Destroying all records that shouldn't be there
+    api_ids_to_delete = all_from_db.map(&:api_id) - all_from_api.map{|tag| tag["id"]}
+    model_class.where(api_id: api_ids_to_delete).destroy_all
+
+    # And for all records that should be there, either inserting or updating
+    all_from_db_by_id = all_from_db.group_by(&:api_id)
+    all_from_api.each do |record|
+      if all_from_db_by_id.has_key?(record["id"])  # Already exists, just needs to be potentially updated
+        all_from_db_by_id[record["id"]].first.update!(name: record["name"])
+      else  # Doesn't exist, needs to be created
+        model_class.create!(api_id: record["id"], name: record["name"])
+      end
+    end
+  end
+
+
+  ## TAGS
+
+  # Updates the DB so that the tags are the same as the ones in the API.
   def sync_all_tags!
     # First, getting everything from both datasources
     all_tags_from_db = Tag.all
     all_tags_from_api = all_tags_from_page(1)
 
-    # Destroying all tags that shouldn't be there
-    api_ids_to_delete = all_tags_from_db.map(&:api_id) - all_tags_from_api.map{|tag| tag["id"]}
-    Tag.where(api_id: api_ids_to_delete).destroy_all
-
-    # And for all tags that should be there, either inserting or updating
-    all_tags_from_db_by_id = all_tags_from_db.group_by(&:api_id)
-    all_tags_from_api.each do |tag|
-      if all_tags_from_db_by_id.has_key?(tag["id"])  # Already exists, just needs to be potentially updated
-        all_tags_from_db_by_id[tag["id"]].first.update!(name: tag["name"])
-      else  # Doesn't exist, needs to be created
-        Tag.create!(api_id: tag["id"], name: tag["name"])
-      end
-    end
+    StackShareService.sync_all!(Tag, all_tags_from_db, all_tags_from_api)
   end
 
   # Recursive function to return all tags of all pages from a certain page number
@@ -48,5 +60,6 @@ class StackShareService
       raise "Error when calling StackShare's API: #{res}"
     end
   end
+
 
 end
