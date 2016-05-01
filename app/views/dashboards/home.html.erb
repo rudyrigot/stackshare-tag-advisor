@@ -7,7 +7,11 @@
       <input type="text" ng-model="query" class="form-control input-lg" placeholder="Filter by typing here">
     </form>
 
-    <div class="row gap">
+    <div class="text-center lg-gap" ng-hide="loaded">
+      <%= image_tag 'loading.gif' %>
+    </div>
+
+    <div class="row gap" ng-show="loaded">
       <div class="col-md-3" ng-repeat="tag in tags | filter:query">
         <a href="/tags/{{tag.id}}/advice">{{tag.humanized_name}}</a>
       </div>
