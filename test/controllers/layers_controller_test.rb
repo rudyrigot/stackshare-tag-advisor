@@ -18,7 +18,7 @@ class LayersControllerTest < ActionController::TestCase
 
   test "should create layer" do
     assert_difference('Layer.count') do
-      post :create, layer: { api_id: @layer.api_id, name: @layer.name, slug: @layer.slug }
+      post :create, layer: { api_id: 999, name: @layer.name, slug: @layer.slug }
     end
 
     assert_redirected_to layer_path(assigns(:layer))

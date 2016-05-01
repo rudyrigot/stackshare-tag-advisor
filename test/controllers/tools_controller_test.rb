@@ -18,7 +18,7 @@ class ToolsControllerTest < ActionController::TestCase
 
   test "should create tool" do
     assert_difference('Tool.count') do
-      post :create, tool: { api_id: @tool.api_id, layer_id: @tool.layer_id, name: @tool.name, popularity: @tool.popularity, slug: @tool.slug }
+      post :create, tool: { api_id: 999, layer_id: @tool.layer_id, name: @tool.name, popularity: @tool.popularity, slug: @tool.slug }
     end
 
     assert_redirected_to tool_path(assigns(:tool))
