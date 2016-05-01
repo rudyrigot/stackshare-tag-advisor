@@ -25,6 +25,6 @@ class Tool < ActiveRecord::Base
     all_tools_from_api.map!{|tool| {"id" => tool["id"], "name" => tool["name"], "slug" => tool["slug"], "popularity" => tool["popularity"], "layer_id" => layers_by_api_id[tool["layer"]["id"]].first.id, "full_object" => tool} }
 
     # Finally, syncing it all
-    stack_share_service.sync_all!(Tool, all_tools_from_db, all_tools_from_api, [:name, :slug, :popularity, :layer_id, :full_object])
+    stack_share_service.sync_all(Tool, all_tools_from_db, all_tools_from_api, [:name, :slug, :popularity, :layer_id, :full_object])
   end
 end

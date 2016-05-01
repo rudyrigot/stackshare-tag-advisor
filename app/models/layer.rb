@@ -17,6 +17,6 @@ class Layer < ActiveRecord::Base
     all_layers_from_api = JSON.parse(res.body)
 
     # Syncing
-    stack_share_service.sync_all!(Layer, all_layers_from_db, all_layers_from_api, [:name, :slug])
+    stack_share_service.sync_all(Layer, all_layers_from_db, all_layers_from_api, [:name, :slug])
   end
 end

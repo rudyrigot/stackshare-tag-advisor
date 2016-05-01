@@ -56,7 +56,7 @@ class StackShareService
   # @param [Array<Model>] all_from_db all of those objects as they currently are in the DB
   # @param [Array<Hash>] all_from_api all of those objects as fetched from the API
   # @param [Array<Symbol>] fields the fields that must be synced up, besides api_id
-  def sync_all!(model_class, all_from_db, all_from_api, fields = [:name])
+  def sync_all(model_class, all_from_db, all_from_api, fields = [:name])
     # Destroying all records that shouldn't be there
     api_ids_to_delete = all_from_db.map(&:api_id) - all_from_api.map{|tag| tag["id"]}
     model_class.where(api_id: api_ids_to_delete).destroy_all

@@ -9,7 +9,7 @@ class Tag < ActiveRecord::Base
     all_tags_from_db = Tag.all
     all_tags_from_api = api_fetch_all_tags_from_page(1, stack_share_service)
     # Then syncing
-    stack_share_service.sync_all!(Tag, all_tags_from_db, all_tags_from_api)
+    stack_share_service.sync_all(Tag, all_tags_from_db, all_tags_from_api)
   end
 
   # Recursive function to return all tags of all pages from a certain page number
