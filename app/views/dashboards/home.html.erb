@@ -1,2 +1,17 @@
-<h1>Dashboards#home</h1>
-<p>Find me in app/views/dashboards/home.html.erb</p>
+<div ng-app="StackshareTagAdvisorApp">
+  <h1>What type of company do you work for?</h1>
+
+  <div ng-controller="TagListCtrl">
+
+    <form class="gap">
+      <input type="text" ng-model="query" class="form-control input-lg" placeholder="Filter by typing here">
+    </form>
+
+    <div class="row gap">
+      <div class="col-md-3" ng-repeat="tag in tags | filter:query">
+        <a href="#{{tag.id}}">{{tag.name}}</a>
+      </div>
+    </div>
+
+  </div>
+</div>

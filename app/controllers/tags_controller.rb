@@ -1,7 +1,7 @@
 class TagsController < ApplicationController
-  include AdminRestricted
 
   before_action :set_tag, only: [:show, :edit, :update, :destroy]
+  http_basic_authenticate_with name: "admin", password: Rails.configuration.x.admin_password, except: :index unless Rails.env.test?
 
   # GET /tags
   # GET /tags.json
