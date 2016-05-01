@@ -1,4 +1,7 @@
 class Stack < ActiveRecord::Base
+  has_and_belongs_to_many :tools
+  has_and_belongs_to_many :tags
+
   validates :api_id, :name, :slug, :popularity, presence: true
   validates :api_id, uniqueness: true
 

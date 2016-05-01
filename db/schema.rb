@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160501174553) do
+ActiveRecord::Schema.define(version: 20160501191459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,22 @@ ActiveRecord::Schema.define(version: 20160501174553) do
     t.hstore   "full_object"
   end
 
+  create_table "stacks_tags", force: :cascade do |t|
+    t.integer "stack_id"
+    t.integer "tag_id"
+  end
+
+  add_index "stacks_tags", ["stack_id"], name: "index_stacks_tags_on_stack_id", using: :btree
+  add_index "stacks_tags", ["tag_id"], name: "index_stacks_tags_on_tag_id", using: :btree
+
+  create_table "stacks_tools", force: :cascade do |t|
+    t.integer "stack_id"
+    t.integer "tool_id"
+  end
+
+  add_index "stacks_tools", ["stack_id"], name: "index_stacks_tools_on_stack_id", using: :btree
+  add_index "stacks_tools", ["tool_id"], name: "index_stacks_tools_on_tool_id", using: :btree
+
   create_table "tags", force: :cascade do |t|
     t.string   "name"
     t.integer  "api_id"
@@ -55,5 +71,9 @@ ActiveRecord::Schema.define(version: 20160501174553) do
 
   add_index "tools", ["layer_id"], name: "index_tools_on_layer_id", using: :btree
 
+  add_foreign_key "stacks_tags", "stacks"
+  add_foreign_key "stacks_tags", "tags"
+  add_foreign_key "stacks_tools", "stacks"
+  add_foreign_key "stacks_tools", "tools"
   add_foreign_key "tools", "layers"
 end

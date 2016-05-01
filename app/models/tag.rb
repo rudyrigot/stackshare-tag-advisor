@@ -1,4 +1,6 @@
 class Tag < ActiveRecord::Base
+  has_and_belongs_to_many :stacks
+
   validates :api_id, :name, presence: true
   validates :api_id, uniqueness: true
 

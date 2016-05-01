@@ -1,5 +1,6 @@
 class Tool < ActiveRecord::Base
   belongs_to :layer
+  has_and_belongs_to_many :stacks
 
   validates :api_id, :name, :slug, :popularity, :layer_id, presence: true
   validates :api_id, uniqueness: true

@@ -27,5 +27,35 @@
   </pre>
 </p>
 
+<p>
+  <strong>Tags:</strong>
+  <% if @tags.empty? %>
+    - none -
+  <% else %>
+    <ul>
+      <% @tags.each do |tag| %>
+        <li>
+          <%= link_to tag.name, tag %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</p>
+
+<p>
+  <strong>Tools:</strong>
+  <% if @tools.empty? %>
+    - none -
+  <% else %>
+    <ul>
+      <% @tools.each do |tool| %>
+        <li>
+          <%= link_to tool.name, tool %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</p>
+
 <%= link_to 'Edit', edit_stack_path(@stack) %> |
 <%= link_to 'Back', stacks_path %>

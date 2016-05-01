@@ -11,6 +11,8 @@ class StacksController < ApplicationController
   # GET /stacks/1
   # GET /stacks/1.json
   def show
+    @tags = @stack.tags
+    @tools = @stack.tools
   end
 
   # GET /stacks/new
