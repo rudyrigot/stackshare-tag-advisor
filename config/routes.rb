@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :stacks
   resources :tools
   resources :layers
   resources :tags

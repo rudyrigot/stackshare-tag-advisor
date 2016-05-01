@@ -1,0 +1,33 @@
+<%= form_for(@stack) do |f| %>
+  <% if @stack.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@stack.errors.count, "error") %> prohibited this stack from being saved:</h2>
+
+      <ul>
+      <% @stack.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :api_id %><br>
+    <%= f.number_field :api_id, class: 'form-control' %>
+  </div>
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
+  <div class="field">
+    <%= f.label :slug %><br>
+    <%= f.text_field :slug, class: 'form-control' %>
+  </div>
+  <div class="field">
+    <%= f.label :popularity %><br>
+    <%= f.number_field :popularity, class: 'form-control' %>
+  </div>
+  <div class="actions">
+    <%= f.submit class: 'btn btn-primary' %>
+  </div>
+<% end %>

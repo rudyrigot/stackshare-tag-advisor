@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Stacks</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Api</th>
+      <th>Name</th>
+      <th>Slug</th>
+      <th>Popularity</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @stacks.each do |stack| %>
+      <tr>
+        <td><%= stack.api_id %></td>
+        <td><%= stack.name %></td>
+        <td><%= stack.slug %></td>
+        <td><%= stack.popularity %></td>
+        <td><%= link_to 'Show', stack %></td>
+        <td><%= link_to 'Edit', edit_stack_path(stack) %></td>
+        <td><%= link_to 'Destroy', stack, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Stack', new_stack_path %>

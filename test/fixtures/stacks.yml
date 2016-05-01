@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  api_id: 1
+  name: StackShare
+  slug: stackshare
+  popularity: 1
+
+two:
+  api_id: 2
+  name: Google
+  slug: google
+  popularity: 1
