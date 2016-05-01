@@ -46,4 +46,17 @@ class TagsControllerTest < ActionController::TestCase
 
     assert_redirected_to tags_path
   end
+
+  test "should get advice" do
+    # Stubbing the /stacks/lookup requests
+    stacks_json = %([{"id":2,"name":"Alphabet","slug":"alphabet","popularity":170,"company":{"description":"","location":""},"tools":[{"id":2681},{"id":2},{"id":999}],"tags":[{"id":1},{"id":999}]},{"id":3,"name":"Holberton School","slug":"holberton-school","popularity":4,"tools":[{"id":2681},{"id":2}],"tags":[{"id":1}]},{"id":3,"name":"Apple","slug":"apple","popularity":4,"tools":[{"id":2681}],"tags":[{"id":1}]}])
+    stub_request(:get, "https://api.stackshare.io/v1/stacks/lookup?access_token=&tag_id=1").to_return(body: stacks_json)
+
+    # Putting some JSON data in tools
+    tools(:one).update! full_object: %({"image_url":"","tag_line":""})
+    tools(:two).update! full_object: %({"image_url":"","tag_line":""})
+
+    get :advice, id: tags(:three)
+    assert_response :success
+  end
 end

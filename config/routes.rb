@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   resources :stacks
   resources :tools
   resources :layers
-  resources :tags
+  resources :tags do
+    get 'advice', on: :member
+  end
   root 'dashboards#home'
 
   # The priority is based upon order of creation: first created -> highest priority.

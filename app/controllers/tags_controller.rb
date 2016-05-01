@@ -1,7 +1,7 @@
 class TagsController < ApplicationController
 
-  before_action :set_tag, only: [:show, :edit, :update, :destroy]
-  http_basic_authenticate_with name: "admin", password: Rails.configuration.x.admin_password, except: :index unless Rails.env.test?
+  before_action :set_tag, only: [:show, :edit, :update, :destroy, :advice]
+  http_basic_authenticate_with name: "admin", password: Rails.configuration.x.admin_password, except: [:index,:advice] unless Rails.env.test?
 
   # GET /tags
   # GET /tags.json
@@ -60,6 +60,20 @@ class TagsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to tags_url, notice: 'Tag was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def advice
+    # First, let's sync up the stacks for this tag
+    Stack.sync_from_stackshare_api @tag.api_id
+    # Is there a most popular stack
+    @most_popular_stack = Stack.joins(:tags).order(popularity: :desc).where("tags.id = ?", @tag.id).limit(1).first
+    # If there is one, fetching / parsing some more needed data
+    if @most_popular_stack.present?
+      @company = JSON.parse @most_popular_stack.full_object['company'].gsub('=>',':')
+      @tags = JSON.parse @most_popular_stack.full_object['tags'].gsub('=>',':')
+      @tools_by_layer_id = @most_popular_stack.tools.group_by(&:layer_id)
+      @all_layers = Layer.order :api_id
     end
   end
 

@@ -1,3 +1,38 @@
 // Place all the styles related to the Tags controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#advice {
+  .layer {
+    margin-top: 20px;
+    .logo {
+      float: right;
+      img {
+        height: 50px;
+      }
+    }
+    h2 {
+      font-size: 2em;
+    }
+    h3 {
+      font-size: 1.4em;
+      margin-top: 0;
+    }
+  }
+  .clean.well {
+    border: 1px solid #ddd;
+    background: transparent;
+  }
+  #about {
+    h2 {
+      margin-top: 0;
+      font-size: 1.5em;
+    }
+    .logo {
+      float: right;
+      img {
+        height: 100px;
+      }
+    }
+  }
+}

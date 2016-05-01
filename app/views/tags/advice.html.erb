@@ -1,0 +1,66 @@
+<article id="advice">
+  <h1>
+    Most popular full stack for "<%= @tag.name %>"<%= @most_popular_stack.present? ? ": #{@most_popular_stack.name}" : '' %>
+  </h1>
+
+  <% if @most_popular_stack.nil? %>
+    <p class="gap">There is currently no full stack for this tag.</p>
+  <% else %>
+
+    <div class="gap">
+      <% @all_layers.each_with_index do |layer, index| %>
+        <% if index != 0 %><hr><% end %>
+        <section class="layer" class="gap">
+          <h2><%= layer.name %></h2>
+          <% @tools_by_layer_id[layer.id].each do |tool| %>
+            <div class="clean well clearfix">
+              <p class="logo"><%= image_tag(tool.full_object['image_url'] || 'http://placehold.it/50x50?text=-') %></p>
+              <h3><%= tool.name %></h3>
+              <p><%= tool.full_object['tag_line'] %></p>
+              <ul>
+                <% if tool.full_object['canonical_url'].present? %>
+                  <li><%= link_to 'See on StackShare', tool.full_object['canonical_url'], target: '_blank' %></li>
+                <% end %>
+                <% if tool.full_object['website_url'].present? %>
+                  <li><%= link_to 'Website', tool.full_object['website_url'], target: '_blank' %></li>
+                <% end %>
+                <% if tool.full_object['opensource_url'].present? %>
+                  <li><%= link_to 'Open source', tool.full_object['opensource_url'], target: '_blank' %></li>
+                <% end %>
+                <% if tool.full_object['twitter_username'].present? %>
+                  <li><%= link_to 'Twitter', "https://twitter.com/#{tool.full_object['twitter_username']}", target: '_blank' %></li>
+                <% end %>
+                <% if tool.full_object['documentation'].present? %>
+                  <li><%= link_to 'Documentation', tool.full_object['documentation_url'], target: '_blank' %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+        </section>
+      <% end %>
+    </div>
+
+    <section id="about" class="gap well clearfix">
+      <p class="logo"><%= image_tag(@company['image_url'] || 'http://placehold.it/100x100?text=-') %></p>
+      <h2>About <%= @most_popular_stack.name %></h2>
+      <p><%= @company['description'] %> - <%= @company['location'] %></p>
+      <ul>
+        <% if @company['canonical_url'].present? %>
+          <li><%= link_to 'See on StackShare', @company['canonical_url'], target: '_blank' %></li>
+        <% end %>
+        <% if @company['website_url'].present? %>
+          <li><%= link_to 'Website', @company['website_url'], target: '_blank' %></li>
+        <% end %>
+        <% if @company['angellist_url'].present? %>
+          <li><%= link_to 'AngelList', @company['angellist_url'], target: '_blank' %></li>
+        <% end %>
+        <% if @company['twitter_username'].present? %>
+          <li><%= link_to 'Twitter', "https://twitter.com/#{@company['twitter_username']}", target: '_blank' %></li>
+        <% end %>
+      </ul>
+      <p>
+        Tags: <%= @tags.map{|t| t['name']}.join(', ') %>
+      </p>
+    </section>
+  <% end %>
+</article>
