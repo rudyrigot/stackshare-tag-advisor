@@ -7,11 +7,16 @@ class Stack < ActiveRecord::Base
 
   # Syncs up stacks from the StackShare API
   # There is some caching in place (sync won't be done if was attempted within the past hour)
-  def self.sync_from_stackshare_api(tag_id)
+  #
+  # @param [FixNum] tag_id the ID of the tag as served by the API
+  # @param [Boolean] force_cache if set to true, sync no matter what the cache state is
+  def self.sync_from_stackshare_api(tag_id, force_cache = false)
     # Caching: checking that this wasn't recently done
-    @@updated_at_by_tag_id ||= {}
-    return if @@updated_at_by_tag_id[tag_id].present? && (Time.now - @@updated_at_by_tag_id[tag_id]) < 1.hour
-    @@updated_at_by_tag_id[tag_id] = Time.now
+    unless force_cache
+      @@updated_at_by_tag_id ||= {}
+      return if @@updated_at_by_tag_id[tag_id].present? && (Time.now - @@updated_at_by_tag_id[tag_id]) < 1.hour
+      @@updated_at_by_tag_id[tag_id] = Time.now
+    end
 
     stack_share_service = StackShareService.new
 

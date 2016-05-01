@@ -8,7 +8,7 @@ class StackTest < ActiveSupport::TestCase
   end
 
   test "sync_from_stackshare_api" do
-    Stack.sync_from_stackshare_api(1)
+    Stack.sync_from_stackshare_api(1, true)
     expected = ["alphabet", "holberton-school", "facebook"]
     assert_equal expected, Stack.order(:api_id).pluck(:slug)
     expected = [["punch", "foo"], ["punch", "foo"], []]
