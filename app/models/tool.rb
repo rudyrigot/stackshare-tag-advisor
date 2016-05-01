@@ -36,4 +36,14 @@ class Tool < ActiveRecord::Base
     # Finally, syncing it all
     stack_share_service.sync_all(Tool, all_tools_from_db, all_tools_from_api, [:name, :slug, :popularity, :layer, :full_object])
   end
+
+
+  # Returns whether an collection of tools is full (has at least one tool of each layer).
+  #
+  # @param [Array<Tool>] tools the array of tools to check
+  # @param [Array<FixNum>] all_layer_ids all of the IDs of layers in the database
+  # @return [Boolean] true if the collection of tools is full
+  def self.full?(tools, all_layer_ids = Layer.order(:id).pluck(:id))
+    tools.map(&:layer_id).uniq.sort == all_layer_ids
+  end
 end

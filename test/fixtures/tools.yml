@@ -8,7 +8,7 @@ one:
   popularity: 50
 
 two:
-  layer: one
+  layer: two
   api_id: 2
   name: Foo
   slug: foo

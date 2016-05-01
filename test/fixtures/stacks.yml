@@ -5,9 +5,18 @@ one:
   name: StackShare
   slug: stackshare
   popularity: 150
+  tags: three
 
 two:
   api_id: 2
   name: Google
   slug: google
   popularity: 200
+  tags: three, one
+
+three:
+  api_id: 4
+  name: Facebook
+  slug: facebook
+  popularity: 200
+  tags: one
