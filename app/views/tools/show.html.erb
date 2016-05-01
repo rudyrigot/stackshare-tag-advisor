@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Layer:</strong>
+  <%= @tool.layer %>
+</p>
+
+<p>
+  <strong>Api:</strong>
+  <%= @tool.api_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @tool.name %>
+</p>
+
+<p>
+  <strong>Slug:</strong>
+  <%= @tool.slug %>
+</p>
+
+<p>
+  <strong>Popularity:</strong>
+  <%= @tool.popularity %>
+</p>
+
+<%= link_to 'Edit', edit_tool_path(@tool) %> |
+<%= link_to 'Back', tools_path %>
