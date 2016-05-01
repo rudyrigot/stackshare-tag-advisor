@@ -65,7 +65,11 @@ class TagsController < ApplicationController
 
   def advice
     # First, let's sync up the stacks for this tag
-    Stack.sync_from_stackshare_api @tag.api_id
+    begin
+      Stack.sync_from_stackshare_api @tag.api_id
+    rescue
+      render inline: "There is currently a problem with StackShare's API; contact them, and come back here later!", layout: 'application'
+    end
     # Is there a most popular stack
     @most_popular_stack = Stack.joins(:tags).order(popularity: :desc).where("tags.id = ?", @tag.id).limit(1).first
     # If there is one, fetching / parsing some more needed data
