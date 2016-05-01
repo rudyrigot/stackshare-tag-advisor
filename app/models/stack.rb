@@ -27,11 +27,12 @@ class Stack < ActiveRecord::Base
         "name" => stack["name"],
         "slug" => stack["slug"],
         "popularity" => stack["popularity"],
+        "tools" => stack["tools"].map{|t|stack_share_service.object_from_api_id(Tool, t["id"])}.compact,
         "full_object" => stack
       }
     end
 
     # Finally, syncing it all
-    stack_share_service.sync_all(Stack, all_stacks_from_db, all_stacks_from_api, [:name, :slug, :popularity, :full_object])
+    stack_share_service.sync_all(Stack, all_stacks_from_db, all_stacks_from_api, [:name, :slug, :popularity, :tools, :full_object])
   end
 end
