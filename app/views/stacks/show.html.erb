@@ -21,6 +21,11 @@
 </p>
 
 <p>
+  <strong>Tool layer count:</strong>
+  <%= @stack.tool_layer_count %>
+</p>
+
+<p>
   <strong>Full object</strong>
   <pre>
 <%= JSON.pretty_generate(@stack.full_object) if @stack.full_object.present? %>
