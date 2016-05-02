@@ -13,3 +13,10 @@ two:
   name: Foo
   slug: foo
   popularity: 50
+
+three:
+  layer: two
+  api_id: 3
+  name: Bar
+  slug: bar
+  popularity: 50
