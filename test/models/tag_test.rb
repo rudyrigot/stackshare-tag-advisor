@@ -21,4 +21,15 @@ class TagTest < ActiveSupport::TestCase
     expected = [{"id"=>1, "name"=>"saas"}, {"id"=>2, "name"=>"cloud-computing"}, {"id"=>3, "name"=>"paas"}, {"id"=>4, "name"=>"big-data"}, {"id"=>5, "name"=>"ventures-for-good"}, {"id"=>6, "name"=>"consumer-lending"}, {"id"=>7, "name"=>"finance-technology"}, {"id"=>8, "name"=>"social-media"}]
     assert_equal expected, Tag.api_fetch_all_tags_from_page(1, StackShareService.new)
   end
+
+  test "most_popular_full_stack" do
+    assert_equal 'google', tags(:one).most_popular_full_stack.slug
+    assert_nil tags(:two).most_popular_full_stack
+    assert_equal 'stackshare', tags(:three).most_popular_full_stack.slug
+    stacks(:one).destroy # stackshare
+    assert_equal 'google', tags(:three).most_popular_full_stack.slug
+    stacks(:two).destroy # google
+    assert_equal 'facebook', tags(:one).most_popular_full_stack.slug
+    assert_nil tags(:three).most_popular_full_stack
+  end
 end

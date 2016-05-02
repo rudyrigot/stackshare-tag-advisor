@@ -11,7 +11,7 @@ class StackTest < ActiveSupport::TestCase
     Stack.sync_from_stackshare_api(1, true)
     expected = ["alphabet", "holberton-school", "apple", "facebook"]
     assert_equal expected, Stack.order(:api_id).pluck(:slug)
-    expected = [2, 1, 1, nil]
+    expected = [2, 1, 1, 0]
     assert_equal expected, Stack.order(:api_id).pluck(:tool_layer_count)
     expected = [["punch", "foo"], ["foo", "bar"], ["punch"], []]
     assert_equal expected, Stack.order(:api_id).map{|s| s.tools.map(&:slug)}

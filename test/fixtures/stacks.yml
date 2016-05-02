@@ -6,6 +6,8 @@ one:
   slug: stackshare
   popularity: 150
   tags: three
+  tools: one, two
+  tool_layer_count: 2
 
 two:
   api_id: 2
@@ -13,6 +15,8 @@ two:
   slug: google
   popularity: 200
   tags: three, one
+  tools: one
+  tool_layer_count: 1
 
 three:
   api_id: 5
@@ -20,3 +24,4 @@ three:
   slug: facebook
   popularity: 200
   tags: one
+  tool_layer_count: 0

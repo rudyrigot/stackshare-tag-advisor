@@ -38,4 +38,27 @@ class Tag < ActiveRecord::Base
       raise "Error when calling StackShare's API to fetch pages: #{res}"
     end
   end
+
+  # For the current tag, finds the most popular stack with the highest possible number of layers.
+  def most_popular_full_stack
+    most_popular_stack_closest_to(Layer.count)
+  end
+
+  private
+
+  # Recursive function to find the most popular stack of the current tag with a number of tool layers, but if there
+  # is no such stack, will look successively in stacks with less layers.
+  #
+  # @param [FixNum] nb_layers the number of layers to look at currently
+  # @return [Stack,nil] either the Stack, ot nil if there's none regardless of number of layers
+  def most_popular_stack_closest_to(nb_layers)
+    stacks = Stack.joins(:tags).order(popularity: :desc).where('tags.id = ?', self.id).where(tool_layer_count: nb_layers).limit(1)
+    if nb_layers == -1
+      nil
+    elsif stacks.empty?
+      most_popular_stack_closest_to(nb_layers - 1)
+    else
+      stacks.first
+    end
+  end
 end
