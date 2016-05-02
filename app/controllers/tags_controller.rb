@@ -70,8 +70,8 @@ class TagsController < ApplicationController
     rescue
       render inline: "There is currently a problem with StackShare's API; contact them, and come back here later!", layout: 'application'
     end
-    # Is there a most popular stack
-    @most_popular_stack = Stack.joins(:tags).order(popularity: :desc).where("tags.id = ?", @tag.id).limit(1).first
+    # Getting the most popular stack
+    @most_popular_stack = @tag.most_popular_full_stack
     # If there is one, fetching / parsing some more needed data
     if @most_popular_stack.present?
       @company = JSON.parse @most_popular_stack.full_object['company'].gsub('=>',':').gsub(':nil',':null')
@@ -79,6 +79,8 @@ class TagsController < ApplicationController
       @tools_by_layer_id = @most_popular_stack.tools.group_by(&:layer_id)
       @all_layers = Layer.order :api_id
     end
+    # Storing it so that we can display a warning to the user that a stack is not full, when it's not.
+    @total_nb_layers = Layer.count
   end
 
   private

@@ -4,37 +4,48 @@
   </h1>
 
   <% if @most_popular_stack.nil? %>
-    <p class="gap">There is currently no full stack for this tag.</p>
+    <p class="gap">There is no known stack with the tag "<%= @tag.humanized_name %>".</p>
   <% else %>
+
+    <% if @total_nb_layers != @most_popular_stack.tool_layer_count %>
+      <div class="alert alert-info sm-gap">
+        There is no stack with the tag "<%= @tag.humanized_name %>" that has all <%= @total_nb_layers %> layers of tools,
+        but here's the best next thing: the most popular stack with <%= @most_popular_stack.tool_layer_count %> layers of tools.
+      </div>
+    <% end %>
 
     <div class="gap">
       <% @all_layers.each_with_index do |layer, index| %>
         <% if index != 0 %><hr><% end %>
         <section class="layer" class="gap">
           <h2><%= layer.name %></h2>
-          <% @tools_by_layer_id[layer.id].each do |tool| %>
-            <div class="clean well clearfix">
-              <p class="logo"><%= image_tag(tool.full_object['image_url'] || 'http://placehold.it/50x50?text=-') %></p>
-              <h3><%= tool.name %></h3>
-              <p><%= tool.full_object['tag_line'] %></p>
-              <ul>
-                <% if tool.full_object['canonical_url'].present? %>
-                  <li><%= link_to 'See on StackShare', tool.full_object['canonical_url'], target: '_blank' %></li>
-                <% end %>
-                <% if tool.full_object['website_url'].present? %>
-                  <li><%= link_to 'Website', tool.full_object['website_url'], target: '_blank' %></li>
-                <% end %>
-                <% if tool.full_object['opensource_url'].present? %>
-                  <li><%= link_to 'Open source', tool.full_object['opensource_url'], target: '_blank' %></li>
-                <% end %>
-                <% if tool.full_object['twitter_username'].present? %>
-                  <li><%= link_to 'Twitter', "https://twitter.com/#{tool.full_object['twitter_username']}", target: '_blank' %></li>
-                <% end %>
-                <% if tool.full_object['documentation'].present? %>
-                  <li><%= link_to 'Documentation', tool.full_object['documentation_url'], target: '_blank' %></li>
-                <% end %>
-              </ul>
-            </div>
+          <% if @tools_by_layer_id[layer.id].nil? || @tools_by_layer_id[layer.id].empty? %>
+            <p><em>- unknown -</em></p>
+          <% else %>
+            <% @tools_by_layer_id[layer.id].each do |tool| %>
+              <div class="clean well clearfix">
+                <p class="logo"><%= image_tag(tool.full_object['image_url'] || 'http://placehold.it/50x50?text=-') %></p>
+                <h3><%= tool.name %></h3>
+                <p><%= tool.full_object['tag_line'] %></p>
+                <ul>
+                  <% if tool.full_object['canonical_url'].present? %>
+                    <li><%= link_to 'See on StackShare', tool.full_object['canonical_url'], target: '_blank' %></li>
+                  <% end %>
+                  <% if tool.full_object['website_url'].present? %>
+                    <li><%= link_to 'Website', tool.full_object['website_url'], target: '_blank' %></li>
+                  <% end %>
+                  <% if tool.full_object['opensource_url'].present? %>
+                    <li><%= link_to 'Open source', tool.full_object['opensource_url'], target: '_blank' %></li>
+                  <% end %>
+                  <% if tool.full_object['twitter_username'].present? %>
+                    <li><%= link_to 'Twitter', "https://twitter.com/#{tool.full_object['twitter_username']}", target: '_blank' %></li>
+                  <% end %>
+                  <% if tool.full_object['documentation'].present? %>
+                    <li><%= link_to 'Documentation', tool.full_object['documentation_url'], target: '_blank' %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
           <% end %>
         </section>
       <% end %>
