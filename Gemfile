@@ -51,4 +51,6 @@ gem 'puma'
 
 gem 'bootstrap-sass', '~> 3.3.6'
 
+gem "minitest-rails"
+
 ruby "2.3.1"
