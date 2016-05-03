@@ -23,28 +23,7 @@
             <p><em>- unknown -</em></p>
           <% else %>
             <% @tools_by_layer_id[layer.id].each do |tool| %>
-              <div class="clean well clearfix">
-                <p class="logo"><%= image_tag(tool.full_object['image_url'] || 'http://placehold.it/50x50?text=-') %></p>
-                <h3><%= tool.name %></h3>
-                <p><%= tool.full_object['tag_line'] %></p>
-                <ul>
-                  <% if tool.full_object['canonical_url'].present? %>
-                    <li><%= link_to 'See on StackShare', tool.full_object['canonical_url'], target: '_blank' %></li>
-                  <% end %>
-                  <% if tool.full_object['website_url'].present? %>
-                    <li><%= link_to 'Website', tool.full_object['website_url'], target: '_blank' %></li>
-                  <% end %>
-                  <% if tool.full_object['opensource_url'].present? %>
-                    <li><%= link_to 'Open source', tool.full_object['opensource_url'], target: '_blank' %></li>
-                  <% end %>
-                  <% if tool.full_object['twitter_username'].present? %>
-                    <li><%= link_to 'Twitter', "https://twitter.com/#{tool.full_object['twitter_username']}", target: '_blank' %></li>
-                  <% end %>
-                  <% if tool.full_object['documentation'].present? %>
-                    <li><%= link_to 'Documentation', tool.full_object['documentation_url'], target: '_blank' %></li>
-                  <% end %>
-                </ul>
-              </div>
+              <%= render tool %>
             <% end %>
           <% end %>
         </section>

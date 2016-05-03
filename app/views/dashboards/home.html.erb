@@ -13,7 +13,7 @@
 
     <div class="row gap" ng-show="loaded">
       <div class="col-md-3" ng-repeat="tag in tags | filter:query">
-        <a href="/tags/{{tag.id}}/advice">{{tag.humanized_name}}</a>
+        {{tag.humanized_name}} (<a href="/tags/{{tag.id}}/most_popular_stack">stack</a> | <a href="/tags/{{tag.id}}/most_popular_tools">tools</a>)
       </div>
     </div>
 

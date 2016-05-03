@@ -1,6 +1,6 @@
 class TagsController < ApplicationController
 
-  before_action :set_tag, only: [:show, :edit, :update, :destroy, :advice]
+  before_action :set_tag, only: [:show, :edit, :update, :destroy, :most_popular_stack, :most_popular_tools]
   http_basic_authenticate_with name: "admin", password: Rails.configuration.x.admin_password, except: [:index,:advice] unless Rails.env.test?
 
   # GET /tags
@@ -63,13 +63,14 @@ class TagsController < ApplicationController
     end
   end
 
-  def advice
+  def most_popular_stack
     # First, let's sync up the stacks for this tag
     begin
       Stack.sync_from_stackshare_api @tag.api_id
     rescue
       render inline: "There is currently a problem with StackShare's API; contact them, and come back here later!", layout: 'application'
     end
+
     # Getting the most popular stack
     @most_popular_stack = @tag.most_popular_full_stack
     # If there is one, fetching / parsing some more needed data
@@ -81,6 +82,11 @@ class TagsController < ApplicationController
     end
     # Storing it so that we can display a warning to the user that a stack is not full, when it's not.
     @total_nb_layers = Layer.count
+  end
+
+  def most_popular_tools
+    # Most popular tools
+    @most_popular_tools = @tag.most_popular_tools
   end
 
   private

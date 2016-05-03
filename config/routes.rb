@@ -3,7 +3,10 @@ Rails.application.routes.draw do
   resources :tools
   resources :layers
   resources :tags do
-    get 'advice', on: :member
+    member do
+      get 'most_popular_stack'
+      get 'most_popular_tools'
+    end
   end
   root 'dashboards#home'
 
