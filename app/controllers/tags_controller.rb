@@ -85,6 +85,13 @@ class TagsController < ApplicationController
   end
 
   def most_popular_tools
+    # First, let's sync up the stacks for this tag
+    begin
+      Stack.sync_from_stackshare_api @tag.api_id
+    rescue
+      render inline: "There is currently a problem with StackShare's API; contact them, and come back here later!", layout: 'application'
+    end
+
     # Most popular tools
     @most_popular_tools = @tag.most_popular_tools
   end

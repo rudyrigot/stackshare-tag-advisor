@@ -59,4 +59,14 @@ class TagsControllerTest < ActionController::TestCase
     get :most_popular_stack, id: tags(:three)
     assert_response :success
   end
+
+  test "should get most_popular_tools" do
+    # Putting some JSON data in tools
+    tools(:one).update! full_object: %({"image_url":"","tag_line":""})
+    tools(:two).update! full_object: %({"image_url":"","tag_line":""})
+    tools(:three).update! full_object: %({"image_url":"","tag_line":""})
+
+    get :most_popular_tools, id: tags(:three)
+    assert_response :success
+  end
 end

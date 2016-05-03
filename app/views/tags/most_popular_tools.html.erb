@@ -1,0 +1,7 @@
+<h2>Most popular tools in order for the tag "<%= @tag.name %>"</h2>
+
+<div class="gap">
+  <% @most_popular_tools.each do |tool| %>
+    <%= render tool %>
+  <% end %>
+</div>
