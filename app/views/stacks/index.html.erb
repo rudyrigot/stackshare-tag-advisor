@@ -10,6 +10,7 @@
       <th>Slug</th>
       <th>Popularity</th>
       <th>Tool layer count</th>
+      <th>Verified</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -22,6 +23,7 @@
         <td><%= stack.slug %></td>
         <td><%= stack.popularity %></td>
         <td><%= stack.tool_layer_count %></td>
+        <td><%= stack.verified? %></td>
         <td><%= link_to 'Show', stack %></td>
         <td><%= link_to 'Edit', edit_stack_path(stack) %></td>
         <td><%= link_to 'Destroy', stack, method: :delete, data: { confirm: 'Are you sure?' } %></td>

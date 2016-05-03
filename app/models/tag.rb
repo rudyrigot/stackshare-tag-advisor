@@ -39,17 +39,20 @@ class Tag < ActiveRecord::Base
     end
   end
 
-  # Will build a list of the tools by order of popularity for the current tag
+  # Will build a list of the tools by order of popularity for the current tag, on verified stacks.
   #
+  # @param [Boolean] include_not_verified also include stacks that are not verified
   # @return [Array<Tool>] most popular tools in order
-  def most_popular_tools
+  def most_popular_tools(include_not_verified= false)
     # First, we're building a hash { id_tool => accumulated_score }
     accumulated_scores = Hash.new(0)
-    Stack.includes(:tools).joins(:tags).where('tags.id = ?', self.id).find_each do |stack|
+    Stack.includes(:tools).joins(:tags).where('tags.id = ?', self.id).where(verified: include_not_verified ? [true, false] : true).find_each do |stack|
       stack.tool_ids.each do |tool_id|
         accumulated_scores[tool_id] += 1
       end
     end
+    # Winning some time if there's no result
+    return [] if accumulated_scores.empty?
     # Then, reverse-sorting this hash, and returning its keys, to get the IDs in order
     tool_ids = accumulated_scores.sort_by{|_,value| value}.reverse.map(&:first)
     # We could query each Tool, and the code would look good, but we should really group these queries into one

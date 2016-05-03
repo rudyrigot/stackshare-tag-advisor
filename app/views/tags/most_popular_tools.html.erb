@@ -1,7 +1,19 @@
-<h2>Most popular tools in order for the tag "<%= @tag.name %>"</h2>
+<h2>Most popular tools in order for the tag "<%= @tag.humanized_name %>"</h2>
 
 <div class="gap">
-  <% @most_popular_tools.each do |tool| %>
-    <%= render tool %>
+  <% if @most_popular_tools.empty? %>
+   <p class="text-center"><em>No tool is known as used for this tag.</em></p>
+  <% else %>
+
+    <% if @included_not_verified %>
+      <div class="alert alert-info sm-gap">
+        No verified stack with the tag "<%= @tag.humanized_name %>" contains known tools, so we've included non-verified stacks.
+      </div>
+    <% end %>
+
+    <% @most_popular_tools.each do |tool| %>
+      <%= render tool %>
+    <% end %>
+
   <% end %>
 </div>

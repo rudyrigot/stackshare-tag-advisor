@@ -26,6 +26,11 @@
 </p>
 
 <p>
+  <strong>Verified:</strong>
+  <%= @stack.verified? %>
+</p>
+
+<p>
   <strong>Full object</strong>
   <pre>
 <%= JSON.pretty_generate(@stack.full_object) if @stack.full_object.present? %>

@@ -28,6 +28,10 @@ class TagTest < ActiveSupport::TestCase
     assert_equal ['punch','foo'], tags(:three).most_popular_tools.map(&:slug)
     stacks(:two).update!(tools: [tools(:two)])
     assert_equal ['foo','punch'], tags(:three).most_popular_tools.map(&:slug)
+
+    stacks(:one).update! verified: false
+    assert_equal ['foo','punch'], tags(:three).most_popular_tools(true).map(&:slug)
+    assert_equal ['foo'], tags(:three).most_popular_tools.map(&:slug)
   end
 
   test "most_popular_full_stack" do

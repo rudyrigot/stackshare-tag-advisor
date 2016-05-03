@@ -40,11 +40,12 @@ class Stack < ActiveRecord::Base
         "tools" => tools,
         "tags" => stack["tags"].map{|t|stack_share_service.object_from_api_id(Tag, t["id"])}.compact,
         "tool_layer_count" => tools.map(&:layer_id).uniq.size,
+        "verified" => stack["verified"],
         "full_object" => stack
       }
     }
 
     # Finally, syncing it all
-    stack_share_service.sync_all(Stack, all_stacks_from_db, all_stacks_from_api, [:name, :slug, :popularity, :tools, :tags, :tool_layer_count, :full_object])
+    stack_share_service.sync_all(Stack, all_stacks_from_db, all_stacks_from_api, [:name, :slug, :popularity, :tools, :tags, :verified, :tool_layer_count, :full_object])
   end
 end

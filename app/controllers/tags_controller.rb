@@ -94,6 +94,11 @@ class TagsController < ApplicationController
 
     # Most popular tools
     @most_popular_tools = @tag.most_popular_tools
+    @included_not_verified = false
+    if @most_popular_tools.empty?
+      @most_popular_tools = @tag.most_popular_tools(true)
+      @included_not_verified = true
+    end
   end
 
   private
