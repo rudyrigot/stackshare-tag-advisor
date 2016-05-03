@@ -1,7 +1,7 @@
 class TagsController < ApplicationController
 
   before_action :set_tag, only: [:show, :edit, :update, :destroy, :most_popular_stack, :most_popular_tools]
-  http_basic_authenticate_with name: "admin", password: Rails.configuration.x.admin_password, except: [:index,:advice] unless Rails.env.test?
+  http_basic_authenticate_with name: "admin", password: Rails.configuration.x.admin_password, except: [:index,:most_popular_stack,:most_popular_tools] unless Rails.env.test?
 
   # GET /tags
   # GET /tags.json
