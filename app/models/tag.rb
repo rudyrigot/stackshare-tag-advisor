@@ -39,7 +39,27 @@ class Tag < ActiveRecord::Base
     end
   end
 
+  # Will build a list of the tools by order of popularity for the current tag
+  #
+  # @return [Array<Tool>] most popular tools in order
+  def most_popular_tools
+    # First, we're building a hash { id_tool => accumulated_score }
+    accumulated_scores = Hash.new(0)
+    Stack.includes(:tools).joins(:tags).where('tags.id = ?', self.id).find_each do |stack|
+      stack.tool_ids.each do |tool_id|
+        accumulated_scores[tool_id] += 1
+      end
+    end
+    # Then, reverse-sorting this hash, and returning its keys, to get the IDs in order
+    tool_ids = accumulated_scores.sort_by{|_,value| value}.reverse.map(&:first)
+    # We could query each Tool, and the code would look good, but we should really group these queries into one
+    tools_by_id = Tool.where(id: tool_ids).group_by(&:id)
+    tool_ids.map{|id| tools_by_id[id].first}
+  end
+
   # For the current tag, finds the most popular stack with the highest possible number of layers.
+  #
+  # @return [Stack]
   def most_popular_full_stack
     most_popular_stack_closest_to(Layer.count)
   end
@@ -61,4 +81,5 @@ class Tag < ActiveRecord::Base
       stacks.first
     end
   end
+
 end

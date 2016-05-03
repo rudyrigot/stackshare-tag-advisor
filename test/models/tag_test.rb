@@ -22,6 +22,14 @@ class TagTest < ActiveSupport::TestCase
     assert_equal expected, Tag.api_fetch_all_tags_from_page(1, StackShareService.new)
   end
 
+  test "most_popular_tools" do
+    assert_equal ['punch'], tags(:one).most_popular_tools.map(&:slug)
+    assert_equal [], tags(:two).most_popular_tools.map(&:slug)
+    assert_equal ['punch','foo'], tags(:three).most_popular_tools.map(&:slug)
+    stacks(:two).update!(tools: [tools(:two)])
+    assert_equal ['foo','punch'], tags(:three).most_popular_tools.map(&:slug)
+  end
+
   test "most_popular_full_stack" do
     assert_equal 'google', tags(:one).most_popular_full_stack.slug
     assert_nil tags(:two).most_popular_full_stack
